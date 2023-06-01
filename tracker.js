@@ -21,7 +21,7 @@ const iouDistance = function (item1, item2) {
     distance = params.distanceLimit + 1;
   }
   // if name is not matching, exclude value
-  if (item1.name !== item2.name) {
+  if (item1.name && item2.name && item1.name !== item2.name) {
     distance = params.distanceLimit + 1;
   }
   return distance;

@@ -18,7 +18,7 @@ exports.ITEM_HISTORY_MAX_LENGTH = 15;
 // Use a simple incremental unique id for the display
 var idDisplay = 0;
 
-exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fastDelete){
+exports.ItemTracked = function (properties, frameNb, unMatchedFramesTolerance, fastDelete) {
   var DEFAULT_UNMATCHEDFRAMES_TOLERANCE = unMatchedFramesTolerance;
   var itemTracked = {};
   // ==== Private =====
@@ -51,7 +51,7 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
     h: properties.h,
     confidence: properties.confidence
   });
-  if(itemTracked.itemHistory.length >= exports.ITEM_HISTORY_MAX_LENGTH) {
+  if (itemTracked.itemHistory.length >= exports.ITEM_HISTORY_MAX_LENGTH) {
     itemTracked.itemHistory.shift();
   }
   itemTracked.velocity = {
@@ -65,9 +65,9 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
   itemTracked.idDisplay = idDisplay;
   idDisplay++
   // Give me a new location / size
-  itemTracked.update = function(properties, frameNb){
+  itemTracked.update = function (properties, frameNb) {
     // if it was zombie and disappear frame was set, reset it to null
-    if(this.disappearFrame) {
+    if (this.disappearFrame) {
       this.disappearFrame = null;
       this.disappearArea = {}
     }
@@ -85,11 +85,11 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
       h: this.h,
       confidence: this.confidence
     });
-    if(itemTracked.itemHistory.length >= exports.ITEM_HISTORY_MAX_LENGTH) {
+    if (itemTracked.itemHistory.length >= exports.ITEM_HISTORY_MAX_LENGTH) {
       itemTracked.itemHistory.shift();
     }
     this.name = properties.name;
-    if(this.nameCount[properties.name]) {
+    if (this.nameCount[properties.name]) {
       this.nameCount[properties.name]++;
     } else {
       this.nameCount[properties.name] = 1;
@@ -99,17 +99,17 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
     // Compute new velocityVector based on last positions history
     this.velocity = this.updateVelocityVector();
   }
-  itemTracked.makeAvailable = function() {
+  itemTracked.makeAvailable = function () {
     this.available = true;
     return this;
   }
-  itemTracked.makeUnavailable = function() {
+  itemTracked.makeUnavailable = function () {
     this.available = false;
     return this;
   }
-  itemTracked.countDown = function(frameNb) {
+  itemTracked.countDown = function (frameNb) {
     // Set frame disappear number
-    if(this.disappearFrame === null) {
+    if (this.disappearFrame === null) {
       this.disappearFrame = frameNb;
       this.disappearArea = {
         x: this.x,
@@ -121,11 +121,11 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
     this.frameUnmatchedLeftBeforeDying--;
     this.isZombie = true;
     // If it was matched less than 1 time, it should die quick
-    if(this.fastDelete && this.nbTimeMatched <= 1) {
+    if (this.fastDelete && this.nbTimeMatched <= 1) {
       this.frameUnmatchedLeftBeforeDying = -1;
     }
   }
-  itemTracked.updateTheoricalPositionAndSize = function() {
+  itemTracked.updateTheoricalPositionAndSize = function () {
     this.itemHistory.push({
       x: this.x,
       y: this.y,
@@ -133,32 +133,33 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
       h: this.h,
       confidence: this.confidence
     });
-    if(itemTracked.itemHistory.length >= exports.ITEM_HISTORY_MAX_LENGTH) {
+    if (itemTracked.itemHistory.length >= exports.ITEM_HISTORY_MAX_LENGTH) {
       itemTracked.itemHistory.shift();
     }
     this.x = this.x + this.velocity.dx
     this.y = this.y + this.velocity.dy
   }
 
-  itemTracked.predictNextPosition = function() {
+  itemTracked.predictNextPosition = function () {
     return {
-      x : this.x + this.velocity.dx,
-      y : this.y + this.velocity.dy,
+      name: this.name,
+      x: this.x + this.velocity.dx,
+      y: this.y + this.velocity.dy,
       w: this.w,
       h: this.h
     };
   }
 
-  itemTracked.isDead = function() {
+  itemTracked.isDead = function () {
     return this.frameUnmatchedLeftBeforeDying < 0;
   }
   // Velocity vector based on the last 15 frames
-  itemTracked.updateVelocityVector = function() {
-    if(exports.ITEM_HISTORY_MAX_LENGTH <= 2) {
+  itemTracked.updateVelocityVector = function () {
+    if (exports.ITEM_HISTORY_MAX_LENGTH <= 2) {
       return { dx: undefined, dy: undefined, }
     }
 
-    if(this.itemHistory.length <= exports.ITEM_HISTORY_MAX_LENGTH) {
+    if (this.itemHistory.length <= exports.ITEM_HISTORY_MAX_LENGTH) {
       const start = this.itemHistory[0];
       const end = this.itemHistory[this.itemHistory.length - 1];
       return computeVelocityVector(start, end, this.itemHistory.length);
@@ -169,11 +170,11 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
     }
   }
 
-  itemTracked.getMostlyMatchedName = function() {
+  itemTracked.getMostlyMatchedName = function () {
     var nameMostlyMatchedOccurences = 0;
     var nameMostlyMatched = '';
     Object.keys(this.nameCount).map((name) => {
-      if(this.nameCount[name] > nameMostlyMatchedOccurences) {
+      if (this.nameCount[name] > nameMostlyMatchedOccurences) {
         nameMostlyMatched = name;
         nameMostlyMatchedOccurences = this.nameCount[name]
       }
@@ -181,7 +182,7 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
     return nameMostlyMatched;
   }
 
-  itemTracked.toJSONDebug = function(roundInt = true) {
+  itemTracked.toJSONDebug = function (roundInt = true) {
     return {
       id: this.id,
       idDisplay: this.idDisplay,
@@ -199,7 +200,7 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
     }
   }
 
-  itemTracked.toJSON = function(roundInt = true) {
+  itemTracked.toJSON = function (roundInt = true) {
     return {
       id: this.idDisplay,
       x: (roundInt ? parseInt(this.x, 10) : this.x),
@@ -214,11 +215,11 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
     }
   }
 
-  itemTracked.toMOT = function(frameIndex) {
+  itemTracked.toMOT = function (frameIndex) {
     return `${frameIndex},${this.idDisplay},${this.x - this.w / 2},${this.y - this.h / 2},${this.w},${this.h},${this.confidence / 100},-1,-1,-1`;
   }
 
-  itemTracked.toJSONGenericInfo = function() {
+  itemTracked.toJSONGenericInfo = function () {
     return {
       id: this.id,
       idDisplay: this.idDisplay,
@@ -232,6 +233,6 @@ exports.ItemTracked = function(properties, frameNb, unMatchedFramesTolerance, fa
   return itemTracked;
 };
 
-exports.reset = function() {
+exports.reset = function () {
   idDisplay = 0;
 }
