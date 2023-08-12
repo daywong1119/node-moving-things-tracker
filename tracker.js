@@ -9,21 +9,21 @@ var DEBUG_MODE = false;
 
 // Distance function
 const iouDistance = function (item1, item2) {
-  // IOU distance, between 0 and 1
-  // The smaller the less overlap
-  var iou = iouAreas(item1, item2);
-
-  // Invert this as the KDTREESEARCH is looking for the smaller value
-  var distance = 1 - iou;
-
-  // If the overlap is iou < 0.95, exclude value
-  if (distance > (1 - params.iouLimit)) {
+  let distance;
+  if (item1.name !== item2.name) {
     distance = params.distanceLimit + 1;
+  } else {
+    // IOU distance, between 0 and 1
+    // The smaller the less overlap
+    var iou = iouAreas(item1, item2);
+    // Invert this as the KDTREESEARCH is looking for the smaller value
+    distance = 1 - iou;
+    // If the overlap is iou < 0.95, exclude value
+    // if (distance > (1 - params.iouLimit)) {
+    //   distance = params.distanceLimit + 1;
+    // }
   }
-  // if name is not matching, exclude value
-  if (item1.name && item2.name && item1.name !== item2.name) {
-    distance = params.distanceLimit + 1;
-  }
+
   return distance;
 }
 
@@ -43,7 +43,7 @@ const params = {
   distanceFunc: iouDistance,
   // The distance limit for matching. If values need to be excluded from
   // matching set their distance to something greater than the distance limit
-  distanceLimit: 10000,
+  distanceLimit: 3000,
   // The algorithm used to match tracks with new detections. Can be either
   // 'kdTree' or 'munkres'.
   matchingAlgorithm: 'kdTree',

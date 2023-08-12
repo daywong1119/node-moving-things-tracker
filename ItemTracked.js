@@ -146,7 +146,8 @@ exports.ItemTracked = function (properties, frameNb, unMatchedFramesTolerance, f
       x: this.x + this.velocity.dx,
       y: this.y + this.velocity.dy,
       w: this.w,
-      h: this.h
+      h: this.h,
+      name: this.name
     };
   }
 
