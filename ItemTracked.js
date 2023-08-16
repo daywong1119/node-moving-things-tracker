@@ -15,6 +15,9 @@ var computeVelocityVector = require('./utils').computeVelocityVector
 /** The maximum length of the item history. */
 exports.ITEM_HISTORY_MAX_LENGTH = 15;
 
+// many direction change due to cushions and balls, decrease velocity to prevent outside table detection
+var velocityPercentage = 0.2
+
 // Use a simple incremental unique id for the display
 var idDisplay = 0;
 
@@ -136,18 +139,17 @@ exports.ItemTracked = function (properties, frameNb, unMatchedFramesTolerance, f
     if (itemTracked.itemHistory.length >= exports.ITEM_HISTORY_MAX_LENGTH) {
       itemTracked.itemHistory.shift();
     }
-    this.x = this.x + this.velocity.dx
-    this.y = this.y + this.velocity.dy
+    this.x = this.x + this.velocity.dx * velocityPercentage
+    this.y = this.y + this.velocity.dy * velocityPercentage
   }
 
   itemTracked.predictNextPosition = function () {
     return {
-      name: this.name,
-      x: this.x + this.velocity.dx,
-      y: this.y + this.velocity.dy,
+      x: this.x + this.velocity.dx * velocityPercentage,
+      y: this.y + this.velocity.dy * velocityPercentage,
       w: this.w,
       h: this.h,
-      name: this.name
+      name: this.name,
     };
   }
 
