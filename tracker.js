@@ -19,9 +19,9 @@ const iouDistance = function (item1, item2) {
     // Invert this as the KDTREESEARCH is looking for the smaller value
     distance = 1 - iou;
     // If the overlap is iou < 0.95, exclude value
-    // if (distance > (1 - params.iouLimit)) {
-    //   distance = params.distanceLimit + 1;
-    // }
+    if (distance > (1 - params.iouLimit)) {
+      distance = params.distanceLimit + 1;
+    }
   }
 
   return distance;
@@ -33,12 +33,12 @@ const params = {
   unMatchedFramesTolerance: 5,
   // DEFAULT_IOU_LIMIT, exclude things from beeing matched if their IOU is lower than this
   // 1 means total overlap whereas 0 means no overlap
-  iouLimit: 0.05,
+  iouLimit: 0.01,
   // Remove new objects fast if they could not be matched in the next frames.
   // Setting this to false ensures the object will stick around at least
   // unMatchedFramesTolerance frames, even if they could neven be matched in
   // subsequent frames.
-  fastDelete: true,
+  fastDelete: false,
   // The function to use to determine the distance between to detected objects
   distanceFunc: iouDistance,
   // The distance limit for matching. If values need to be excluded from
